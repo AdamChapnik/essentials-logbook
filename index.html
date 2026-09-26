@@ -501,10 +501,12 @@ function warmSets(n, reps, ww) {
 }
 function renderCalc(w, d, s, i, ex) {
   const { n, choices } = wuCount(s, i);
-  if (!n) return `<div class="calc"><div class="calc-h"><span class="lbl">Warm-up sets</span><span>None: go straight to working sets.</span></div></div>`;
   const sl = slotLog(w, d, i, false);
   const last = lastTime(w, d, ex, s.var);
   const guess = last ? parseFloat(last.sets[0].l) : NaN;
+  if (!n) return `<div class="calc"><div class="calc-h"><span class="lbl">Working weight</span>
+    <input class="inp num" id="ww-${i}" data-act="ww" data-slot="${i}" inputmode="decimal" placeholder="${isNaN(guess) ? 'weight' : guess}" value="${sl && sl.ww ? esc(sl.ww) : ''}" aria-label="Working weight"><span>${unit()}</span>
+  </div><div class="wsets" id="wsets-${i}">${renderWsets(n, repLow(s.reps), guess)}</div></div>`;
   const ww = sl && sl.ww ? parseFloat(sl.ww) : NaN;
   return `<div class="calc"><div class="calc-h"><span class="lbl">Warm-up for</span>
     <input class="inp num" id="ww-${i}" data-act="ww" data-slot="${i}" inputmode="decimal" placeholder="${isNaN(guess) ? 'weight' : guess}" value="${sl && sl.ww ? esc(sl.ww) : ''}" aria-label="Working weight"><span>${unit()}</span>
@@ -512,6 +514,7 @@ function renderCalc(w, d, s, i, ex) {
   </div><div class="wsets" id="wsets-${i}">${renderWsets(n, repLow(s.reps), isNaN(ww) ? guess : ww)}</div></div>`;
 }
 function renderWsets(n, reps, ww) {
+  if (!n) return `<span style="color:var(--muted);font-size:13px">No warm-up needed here — go straight to working sets.</span>`;
   return warmSets(n, reps, isNaN(ww) ? null : ww).map((x, k) => `<div class="wset num">${x.load != null ? `<b>${x.load}</b> ${unit()}` : `<b>${Math.round(x.p * 100)}%</b>`} × ${x.reps}<span>${Math.round(x.p * 100)}%</span></div>`).join('');
 }
 
